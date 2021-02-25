@@ -46,15 +46,14 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-    public List<ObjectNode> getProductsByDate(String date) throws ParseException {
+        public List<ObjectNode> getProductsByDate(String date) throws ParseException {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         Date localDate = dateFormatter.parse(date);
         List<Price> prices = priceRepo.getAllPricesByTime(localDate);
         List<ObjectNode> objectNodeList = new ArrayList<>();
         for (Price price : prices) {
             ObjectNode object = createObjectNode();
-            String name = price.getProductId().getName();
-            object.put("name", name);
+            object.put("name", price.getProductId().getName());
             object.put("price", price.getPrice());
             objectNodeList.add(object);
         }

@@ -25,6 +25,7 @@ public class LeagueTestApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LeagueTestApplication.class, args);
 		Path path = Paths.get(productService.getFileName());
+
 		if (Files.exists(path)){
 			productService.parseFile();
 		}
