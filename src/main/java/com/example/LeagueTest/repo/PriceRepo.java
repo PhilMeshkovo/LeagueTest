@@ -16,7 +16,7 @@ public interface PriceRepo extends JpaRepository<Price, Long> {
 
     @Query(nativeQuery = true,
             value = "SELECT count(*) FROM price WHERE product_id = :productId")
-    Integer findCountForProductId(@Param("productId")Long productId);
+    Integer findCountForProductId(@Param("productId") Long productId);
 
     @Query(nativeQuery = true,
             value = "SELECT DISTINCT price.time FROM price")

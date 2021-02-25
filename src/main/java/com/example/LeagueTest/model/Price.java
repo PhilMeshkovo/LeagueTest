@@ -1,6 +1,5 @@
 package com.example.LeagueTest.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;

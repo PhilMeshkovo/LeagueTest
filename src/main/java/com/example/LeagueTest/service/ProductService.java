@@ -46,7 +46,7 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-        public List<ObjectNode> getProductsByDate(String date) throws ParseException {
+    public List<ObjectNode> getProductsByDate(String date) throws ParseException {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         Date localDate = dateFormatter.parse(date);
         List<Price> prices = priceRepo.getAllPricesByTime(localDate);
@@ -100,11 +100,11 @@ public class ProductService {
     public void parseFile() {
         log.info("Begin parsing file");
         CSVParser csvParser = new CSVParserBuilder().withSeparator(';').build();
-        try(CSVReader reader = new CSVReaderBuilder(
+        try (CSVReader reader = new CSVReaderBuilder(
                 new FileReader(fileName))
                 .withCSVParser(csvParser)
                 .withSkipLines(1)
-                .build()){
+                .build()) {
             List<String[]> listArrays = reader.readAll();
             for (String[] listArray : listArrays) {
                 Product product = new Product();
