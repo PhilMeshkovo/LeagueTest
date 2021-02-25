@@ -1,9 +1,10 @@
 package com.example.LeagueTest.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -13,7 +14,7 @@ public class Price {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
     private Double price;
-    private LocalDateTime time;
+    private LocalDate time;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
