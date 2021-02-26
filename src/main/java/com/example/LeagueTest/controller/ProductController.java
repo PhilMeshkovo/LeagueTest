@@ -34,8 +34,4 @@ public class ProductController {
         ObjectNode statistics = productService.getStatistics();
         return ResponseEntity.ok(statistics);
     }
-//    @GetMapping("/parse")
-//    public void parseFile() throws ParseException {
-//        productService.parseFile();
-//    }
 }

@@ -19,9 +19,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -129,12 +133,13 @@ public class ProductService {
             log.error(e.getMessage());
             e.printStackTrace();
         }
+        File file = new File(fileName);
+        file.delete();
+        log.info("File deleted");
     }
 
     private ObjectNode createObjectNode() {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.createObjectNode();
     }
-
-
 }
