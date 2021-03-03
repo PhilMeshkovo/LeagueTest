@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,16 @@ public class ProductService {
     public ProductService(PriceRepo priceRepo, ProductRepo productRepo) {
         this.priceRepo = priceRepo;
         this.productRepo = productRepo;
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    public void scheduledParse() {
+        File folder = new File(directoryName);
+        for (File file : folder.listFiles()) {
+            if (file.toString().endsWith(".csv")) {
+                parseFile(file.getAbsolutePath());
+            }
+        }
     }
 
     public List<ObjectNode> getProductsByDate(String date) throws ParseException {

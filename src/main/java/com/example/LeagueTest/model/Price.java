@@ -15,7 +15,7 @@ public class Price {
     private Double price;
     private LocalDate time;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product productId;
 }
