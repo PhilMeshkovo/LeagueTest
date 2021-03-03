@@ -14,15 +14,7 @@ public interface PriceRepo extends JpaRepository<Price, Long> {
             value = "SELECT * FROM price WHERE time = :date")
     List<Price> getAllPricesByTime(@Param("date") Date date);
 
-    @Query(nativeQuery = true,
-            value = "SELECT count(*) FROM price WHERE product_id = :productId")
-    Integer findCountForProductId(@Param("productId") Long productId);
-
-    @Query(nativeQuery = true,
-            value = "SELECT DISTINCT price.time FROM price")
-    List<Date> getAllDates();
-
-    @Query(nativeQuery = true,
-            value = "SELECT count(*) FROM price WHERE time = :date")
-    Integer getCountForDate(@Param("date") Date date);
+    @Query(nativeQuery = true, value = "SELECT price.time, count(*)\n" +
+            "\tFROM price GROUP BY price.time;")
+    List<Object[]> getFrequencyToDates();
 }

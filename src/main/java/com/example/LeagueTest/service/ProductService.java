@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -79,22 +79,24 @@ public class ProductService {
         log.info("THREAD - " + Thread.currentThread().getName());
 
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
-            List<Product> allProducts = productRepo.findAll();
-            Map<String, Integer> productToFrequency = new HashMap<>();
-            for (Product product : allProducts) {
-                Integer pricesCountForProduct = priceRepo.findCountForProductId(product.getId());
-                productToFrequency.put(product.getName(), pricesCountForProduct);
+            List<Object[]> productToFrequency = productRepo.getCountToProduct();
+            Map<String, Integer> productToCount = new HashMap<>();
+            for (Object[] objects : productToFrequency) {
+                String product = (String) objects[0];
+                Integer count = ((BigInteger) objects[1]).intValue();
+                productToCount.put(product, count);
             }
             log.info("THREAD - " + Thread.currentThread().getName());
-            statisticDto.setFrequency(productToFrequency);
+            statisticDto.setFrequency(productToCount);
         });
 
         CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
-            List<Date> dates = priceRepo.getAllDates();
+            List<Object[]> listFrequencyToDates = priceRepo.getFrequencyToDates();
             Map<String, Integer> dateToCount = new HashMap<>();
-            for (Date date : dates) {
-                Integer count = priceRepo.getCountForDate(date);
-                dateToCount.put(date.toString(), count);
+            for (Object[] objects : listFrequencyToDates) {
+                String date = objects[0].toString();
+                Integer count = ((BigInteger) objects[1]).intValue();
+                dateToCount.put(date, count);
             }
             log.info("THREAD - " + Thread.currentThread().getName());
             statisticDto.setCountToDates(dateToCount);
