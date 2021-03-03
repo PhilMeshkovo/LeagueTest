@@ -4,4 +4,4 @@ spring.datasource.password: qwertyui
 spring.jpa.hibernate.ddl-auto: update
 spring.jpa.show-sql: true
 
-fileName.value: C://users/phil/desktop/file.csv
+directory.value: C://users/phil/desktop/

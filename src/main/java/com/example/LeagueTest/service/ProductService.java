@@ -23,9 +23,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,8 +35,8 @@ import java.util.*;
 @Data
 public class ProductService {
 
-    @Value("${fileName.value}")
-    private String fileName;
+    @Value("${directory.value}")
+    private String directoryName;
 
     private final PriceRepo priceRepo;
     private final ProductRepo productRepo;
@@ -101,7 +98,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void parseFile() {
+    public void parseFile(String fileName) {
         log.info("Begin parsing file");
         CSVParser csvParser = new CSVParserBuilder().withSeparator(';').build();
         try (CSVReader reader = new CSVReaderBuilder(

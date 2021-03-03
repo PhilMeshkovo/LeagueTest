@@ -3,9 +3,7 @@ package com.example.LeagueTest.timer;
 import com.example.LeagueTest.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
 import java.util.TimerTask;
 
 public class TimerParseTask extends TimerTask {
@@ -19,9 +17,11 @@ public class TimerParseTask extends TimerTask {
 
     @Override
     public void run() {
-        Path path = Paths.get(productService.getFileName());
-        if (Files.exists(path)) {
-            productService.parseFile();
+        File folder = new File(productService.getDirectoryName());
+        for (File file : folder.listFiles()) {
+            if (file.toString().endsWith(".csv")) {
+                productService.parseFile(file.getAbsolutePath());
+            }
         }
     }
 }
