@@ -1,7 +1,8 @@
 package com.example.LeagueTest.controller;
 
+import com.example.LeagueTest.dto.ProductsByDateDto;
+import com.example.LeagueTest.dto.StatisticDto;
 import com.example.LeagueTest.service.ProductService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,13 +26,13 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<?> getProductForDate(@RequestParam(value = "date") String date) throws ParseException {
-        List<ObjectNode> productsByDate = productService.getProductsByDate(date);
+        List<ProductsByDateDto> productsByDate = productService.getProductsByDate(date);
         return ResponseEntity.ok(productsByDate);
     }
 
     @GetMapping("/statistic")
     public ResponseEntity<?> getStatistics() throws InterruptedException {
-        ObjectNode statistics = productService.getStatistics();
+        StatisticDto statistics = productService.getStatistics();
         return ResponseEntity.ok(statistics);
     }
 }

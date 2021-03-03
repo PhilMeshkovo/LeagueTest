@@ -1,12 +1,11 @@
 package com.example.LeagueTest.service;
 
+import com.example.LeagueTest.dto.ProductsByDateDto;
+import com.example.LeagueTest.dto.StatisticDto;
 import com.example.LeagueTest.model.Price;
 import com.example.LeagueTest.model.Product;
 import com.example.LeagueTest.repo.PriceRepo;
 import com.example.LeagueTest.repo.ProductRepo;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -58,24 +57,23 @@ public class ProductService {
         }
     }
 
-    public List<ObjectNode> getProductsByDate(String date) throws ParseException {
+    public List<ProductsByDateDto> getProductsByDate(String date) throws ParseException {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         Date localDate = dateFormatter.parse(date);
         List<Price> prices = priceRepo.getAllPricesByTime(localDate);
-        List<ObjectNode> objectNodeList = new ArrayList<>();
+        List<ProductsByDateDto> productsList = new ArrayList<>();
         for (Price price : prices) {
-            ObjectNode object = createObjectNode();
-            object.put("name", price.getProductId().getName());
-            object.put("price", price.getPrice());
-            objectNodeList.add(object);
+            ProductsByDateDto productsByDateDto = new ProductsByDateDto();
+            productsByDateDto.setName(price.getProductId().getName());
+            productsByDateDto.setPrice(price.getPrice());
+            productsList.add(productsByDateDto);
         }
-        return objectNodeList;
+        return productsList;
     }
 
-    public ObjectNode getStatistics() throws InterruptedException {
-        ObjectNode object = createObjectNode();
-        ObjectMapper mapper = new ObjectMapper();
-        object.put("count", productRepo.count());
+    public StatisticDto getStatistics() throws InterruptedException {
+        StatisticDto statisticDto = new StatisticDto();
+        statisticDto.setCount(productRepo.count());
 
         Thread thread = new Thread(() -> {
             List<Product> allProducts = productRepo.findAll();
@@ -84,8 +82,7 @@ public class ProductService {
                 Integer pricesCountForProduct = priceRepo.findCountForProductId(product.getId());
                 productToFrequency.put(product.getName(), pricesCountForProduct);
             }
-            JsonNode map = mapper.valueToTree(productToFrequency);
-            object.set("frequency", map);
+            statisticDto.setFrequency(productToFrequency);
         });
         thread.start();
 
@@ -98,14 +95,13 @@ public class ProductService {
                 String strDate = dateFormat.format(date);
                 dateToCount.put(strDate, count);
             }
-            JsonNode mapDates = mapper.valueToTree(dateToCount);
-            object.set("countToDates", mapDates);
+            statisticDto.setCountToDates(dateToCount);
         });
         thread1.start();
         thread.join();
         thread1.join();
 
-        return object;
+        return statisticDto;
     }
 
     @Transactional
@@ -144,10 +140,5 @@ public class ProductService {
         File file = new File(fileName);
         file.delete();
         log.info("File deleted");
-    }
-
-    private ObjectNode createObjectNode() {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.createObjectNode();
     }
 }

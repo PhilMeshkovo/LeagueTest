@@ -1,10 +1,10 @@
 package com.example.LeagueTest;
 
+import com.example.LeagueTest.dto.ProductsByDateDto;
 import com.example.LeagueTest.model.Price;
 import com.example.LeagueTest.model.Product;
 import com.example.LeagueTest.repo.PriceRepo;
 import com.example.LeagueTest.service.ProductService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -43,7 +43,7 @@ public class ProductServiceTest {
         price.setTime(localDate);
         price.setProductId(new Product(1L, "product1"));
         Mockito.doReturn(List.of(price)).when(priceRepo).getAllPricesByTime(date);
-        List<ObjectNode> productsByDate = productService.getProductsByDate("2020-10-10");
-        Assertions.assertEquals(4000.0, productsByDate.get(0).get("price").asDouble());
+        List<ProductsByDateDto> productsByDate = productService.getProductsByDate("2020-10-10");
+        Assertions.assertEquals(4000.0, productsByDate.get(0).getPrice());
     }
 }
