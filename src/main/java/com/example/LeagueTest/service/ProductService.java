@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Log4j2
@@ -75,7 +77,8 @@ public class ProductService {
         StatisticDto statisticDto = new StatisticDto();
         statisticDto.setCount(productRepo.count());
 
-        Thread thread = new Thread(() -> {
+
+        CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
             List<Product> allProducts = productRepo.findAll();
             Map<String, Integer> productToFrequency = new HashMap<>();
             for (Product product : allProducts) {
@@ -84,9 +87,8 @@ public class ProductService {
             }
             statisticDto.setFrequency(productToFrequency);
         });
-        thread.start();
 
-        Thread thread1 = new Thread(() -> {
+        CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
             List<Date> dates = priceRepo.getAllDates();
             Map<String, Integer> dateToCount = new HashMap<>();
             for (Date date : dates) {
@@ -97,10 +99,13 @@ public class ProductService {
             }
             statisticDto.setCountToDates(dateToCount);
         });
-        thread1.start();
-        thread.join();
-        thread1.join();
 
+        CompletableFuture<Void> future = CompletableFuture.allOf(future1, future2);
+        try {
+            future.get();
+        } catch (ExecutionException e) {
+            log.error(e.getMessage());
+        }
         return statisticDto;
     }
 
