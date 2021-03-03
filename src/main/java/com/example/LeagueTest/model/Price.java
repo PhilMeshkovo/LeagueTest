@@ -1,5 +1,6 @@
 package com.example.LeagueTest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class Price {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
     private Double price;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate time;
 
     @ManyToOne(fetch = FetchType.EAGER)

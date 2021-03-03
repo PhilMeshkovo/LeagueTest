@@ -76,7 +76,7 @@ public class ProductService {
     public StatisticDto getStatistics() throws InterruptedException {
         StatisticDto statisticDto = new StatisticDto();
         statisticDto.setCount(productRepo.count());
-
+        log.info("THREAD - " + Thread.currentThread().getName());
 
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
             List<Product> allProducts = productRepo.findAll();
@@ -85,6 +85,7 @@ public class ProductService {
                 Integer pricesCountForProduct = priceRepo.findCountForProductId(product.getId());
                 productToFrequency.put(product.getName(), pricesCountForProduct);
             }
+            log.info("THREAD - " + Thread.currentThread().getName());
             statisticDto.setFrequency(productToFrequency);
         });
 
@@ -93,10 +94,9 @@ public class ProductService {
             Map<String, Integer> dateToCount = new HashMap<>();
             for (Date date : dates) {
                 Integer count = priceRepo.getCountForDate(date);
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String strDate = dateFormat.format(date);
-                dateToCount.put(strDate, count);
+                dateToCount.put(date.toString(), count);
             }
+            log.info("THREAD - " + Thread.currentThread().getName());
             statisticDto.setCountToDates(dateToCount);
         });
 
