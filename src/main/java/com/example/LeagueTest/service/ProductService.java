@@ -31,6 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -80,24 +81,20 @@ public class ProductService {
 
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
             List<Object[]> productToFrequency = productRepo.getCountToProduct();
-            Map<String, Integer> productToCount = new HashMap<>();
-            for (Object[] objects : productToFrequency) {
-                String product = (String) objects[0];
-                Integer count = ((BigInteger) objects[1]).intValue();
-                productToCount.put(product, count);
-            }
+
+            Map<String, Integer> productToCount = productToFrequency.stream()
+                    .collect(Collectors.toMap(o -> (String) o[0],
+                    o -> ((BigInteger) o[1]).intValue()));
             log.info("THREAD - " + Thread.currentThread().getName());
             statisticDto.setFrequency(productToCount);
         });
 
         CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
             List<Object[]> listFrequencyToDates = priceRepo.getFrequencyToDates();
-            Map<String, Integer> dateToCount = new HashMap<>();
-            for (Object[] objects : listFrequencyToDates) {
-                String date = objects[0].toString();
-                Integer count = ((BigInteger) objects[1]).intValue();
-                dateToCount.put(date, count);
-            }
+
+            Map<String, Integer> dateToCount = listFrequencyToDates.stream()
+                    .collect(Collectors.toMap(o -> o[0].toString(),
+                    o -> ((BigInteger) o[1]).intValue()));
             log.info("THREAD - " + Thread.currentThread().getName());
             statisticDto.setCountToDates(dateToCount);
         });
